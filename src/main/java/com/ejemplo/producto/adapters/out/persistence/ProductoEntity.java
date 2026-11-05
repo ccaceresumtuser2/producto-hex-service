@@ -8,21 +8,43 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Index;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
+import org.hibernate.annotations.Check;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** Representa la tabla productos con JPA. Solo vive en el adaptador de persistencia. */
+/**
+ * Representa la tabla productos con JPA. Solo vive en el adaptador de persistencia.
+ * <p>
+ * Hibernate crea la tabla si no existe (ddl-auto: update). Por eso aquí se declaran también
+ * el índice único, los índices de búsqueda y las restricciones CHECK que antes estaban en el script SQL.
+ */
 @Entity
-@Table(name = "productos")
+@Table(name = "productos",
+        uniqueConstraints = @UniqueConstraint(name = "uk_productos_codigo", columnNames = "codigo"),
+        indexes = {
+                // Búsquedas por nombre
+                @Index(name = "idx_productos_nombre", columnList = "nombre"),
+                // Filtro por categoría
+                @Index(name = "idx_productos_categoria", columnList = "categoria"),
+                // Filtro combinado: productos activos de una categoría
+                @Index(name = "idx_productos_categoria_activo", columnList = "categoria, activo")
+        })
+@Check(name = "ck_productos_codigo", constraints = "codigo ~ '^[A-Z]{3}-[0-9]{4}$'")
+@Check(name = "ck_productos_precio", constraints = "precio > 0")
+@Check(name = "ck_productos_stock", constraints = "stock >= 0")
+@Check(name = "ck_productos_categoria",
+        constraints = "categoria IN ('TECNOLOGIA', 'HOGAR', 'ROPA', 'ALIMENTOS', 'OTROS')")
 public class ProductoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "codigo", nullable = false, unique = true, length = 8)
+    @Column(name = "codigo", nullable = false, length = 8)
     private String codigo;
 
     @Column(name = "nombre", nullable = false, length = 100)

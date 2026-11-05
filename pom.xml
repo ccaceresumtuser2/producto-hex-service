@@ -50,16 +50,6 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- Migraciones de base de datos -->
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.flywaydb</groupId>
-            <artifactId>flyway-database-postgresql</artifactId>
-        </dependency>
-
         <!-- Pruebas -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

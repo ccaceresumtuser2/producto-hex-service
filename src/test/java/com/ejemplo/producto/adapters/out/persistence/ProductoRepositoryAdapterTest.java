@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * Prueba el adaptador contra una base H2 en memoria (perfil "test", ver application-test.yml).
- * Flyway crea la tabla con las mismas migraciones que en PostgreSQL.
+ * Hibernate crea la tabla a partir de ProductoEntity, igual que en PostgreSQL.
  * Cada prueba corre en una transacción que se revierte al final, así que no deja datos.
  */
 @DataJpaTest

@@ -9,7 +9,6 @@ API REST de productos construida con **arquitectura hexagonal** (puertos y adapt
 | Java | 21 |
 | Spring Boot | 3.5.7 |
 | PostgreSQL | 18 |
-| Flyway | migraciones de base de datos |
 | springdoc-openapi | 2.8.9 (Swagger UI) |
 | JUnit 5 + Mockito + MockMvc | pruebas |
 | H2 | base de datos en memoria para las pruebas |
@@ -37,7 +36,7 @@ Si la base de datos no existe:
 CREATE DATABASE topicos_db;
 ```
 
-La tabla `productos` **no se crea a mano**: Flyway ejecuta `V1__crear_tabla_productos.sql` al arrancar.
+La tabla `productos` **no se crea a mano**: si no existe, Hibernate la crea al arrancar a partir de `ProductoEntity` (`ddl-auto: update`).
 
 ## Ejecutar
 
@@ -319,7 +318,7 @@ Tabla `productos`:
 
 Índices: `uk_productos_codigo` (único), `idx_productos_nombre`, `idx_productos_categoria`, `idx_productos_categoria_activo`.
 
-> Si la tabla ya existía antes de usar Flyway, `baseline-on-migrate: true` la marca como versión 1 y no intenta recrearla.
+> Índices y restricciones `CHECK` están declarados en `ProductoEntity` (`@Table`, `@Check`). Si la tabla ya existe, Hibernate no la recrea.
 
 ## Pruebas
 
@@ -332,6 +331,6 @@ mvn test
 | `ProductoTest` | Reglas de negocio del modelo | Nada (Java puro) |
 | `CambiarPrecioProductoTest` | Caso de uso con repositorio simulado (Mockito) | Nada |
 | `ProductoControllerTest` | Endpoints y códigos HTTP (MockMvc) | Nada |
-| `ProductoRepositoryAdapterTest` | Acceso a la base de datos (JPA + migraciones Flyway) | Nada (H2 en memoria) |
+| `ProductoRepositoryAdapterTest` | Acceso a la base de datos (JPA + esquema creado por Hibernate) | Nada (H2 en memoria) |
 
-La prueba de persistencia usa el perfil `test` (`src/test/resources/application-test.yml`): una base H2 en memoria en modo PostgreSQL, donde Flyway ejecuta las mismas migraciones. No hace falta tener PostgreSQL instalado para correr `mvn test`.
+La prueba de persistencia usa el perfil `test` (`src/test/resources/application-test.yml`): una base H2 en memoria en modo PostgreSQL, donde Hibernate crea la tabla. No hace falta tener PostgreSQL instalado para correr `mvn test`.
