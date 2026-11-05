@@ -45,3 +45,56 @@ jobs:
         with:
           name: reportes-pruebas
           path: target/surefire-reports/
+
+  # Solo en push a main y si las pruebas pasaron: construye la imagen Docker,
+  # la sube a GitHub Container Registry (ghcr.io) y pide a Render que la despliegue.
+  docker:
+    name: Imagen Docker y despliegue en Render
+    needs: build
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write   # necesario para subir la imagen a ghcr.io
+
+    steps:
+      - name: Descargar el código
+        uses: actions/checkout@v4
+
+      # ghcr.io exige el nombre del repositorio en minúsculas.
+      - name: Nombre de la imagen
+        run: echo "IMAGEN=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
+
+      - name: Iniciar sesión en ghcr.io
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Preparar Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      # Dos etiquetas: "latest" y el hash del commit (para saber exactamente qué versión corre).
+      - name: Construir y subir la imagen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGEN }}:latest
+            ${{ env.IMAGEN }}:${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # RENDER_DEPLOY_HOOK_URL se crea en GitHub: Settings > Secrets and variables > Actions.
+      # Se envía la imagen exacta de este commit; si el secreto no existe, el paso se omite.
+      - name: Desplegar en Render
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
+        run: |
+          if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
+            echo "Secreto RENDER_DEPLOY_HOOK_URL no configurado: se omite el despliegue."
+            exit 0
+          fi
+          curl -fsS -X POST "$RENDER_DEPLOY_HOOK_URL&imgURL=$(printf '%s' "$IMAGEN:$GITHUB_SHA" | jq -sRr @uri)"

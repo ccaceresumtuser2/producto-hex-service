@@ -1,14 +1,17 @@
 server:
-  port: 8090
+  # Render (y otras plataformas) indican el puerto en la variable PORT; en local se usa 8090.
+  port: ${PORT:8090}
 
 spring:
   application:
     name: producto-hex-service
 
+  # La conexión se toma de variables de entorno (en Render se configuran en el panel del servicio).
+  # Los valores después de ":" son los de desarrollo local y se usan si la variable no existe.
   datasource:
-    url: jdbc:postgresql://localhost:5432/topicos_db
-    username: postgres
-    password: bdatos
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/topicos_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:bdatos}
 
   jpa:
     open-in-view: false
