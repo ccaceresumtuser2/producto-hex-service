@@ -19,7 +19,9 @@ HELP.md
 *.iml
 *.iws
 *.ipr
-out/
+# Solo la carpeta de compilación de IntelliJ en la raíz (sin la "/" inicial también ignoraría
+# los paquetes ports/out y adapters/out del código fuente)
+/out/
 
 # --- Eclipse / STS ---
 .apt_generated
