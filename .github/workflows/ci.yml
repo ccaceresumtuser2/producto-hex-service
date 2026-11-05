@@ -88,13 +88,21 @@ jobs:
           cache-to: type=gha,mode=max
 
       # RENDER_DEPLOY_HOOK_URL se crea en GitHub: Settings > Secrets and variables > Actions.
-      # Se envía la imagen exacta de este commit; si el secreto no existe, el paso se omite.
+      # Render vuelve a desplegar su configuración actual (si usa la imagen :latest, descarga la recién subida).
+      # Si el secreto no existe, el paso se omite con un aviso.
       - name: Desplegar en Render
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
           if [ -z "$RENDER_DEPLOY_HOOK_URL" ]; then
-            echo "Secreto RENDER_DEPLOY_HOOK_URL no configurado: se omite el despliegue."
+            echo "::warning::Secreto RENDER_DEPLOY_HOOK_URL no configurado: se omite el despliegue."
             exit 0
           fi
-          curl -fsS -X POST "$RENDER_DEPLOY_HOOK_URL&imgURL=$(printf '%s' "$IMAGEN:$GITHUB_SHA" | jq -sRr @uri)"
+          # Se muestra la respuesta de Render para poder diagnosticar si algo falla.
+          codigo=$(curl -sS -o respuesta.txt -w '%{http_code}' -X POST "$RENDER_DEPLOY_HOOK_URL")
+          echo "Render respondió HTTP $codigo:"
+          cat respuesta.txt; echo
+          if [ "$codigo" -ge 300 ]; then
+            echo "::error::Render rechazó el despliegue (HTTP $codigo). Revise que el secreto sea la URL del Deploy Hook del servicio web."
+            exit 1
+          fi
