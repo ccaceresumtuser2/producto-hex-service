@@ -15,7 +15,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI productoOpenApi() {
         return new OpenAPI().info(new Info()
-                .title("Producto Service API")
+                .title("Producto Service API V1.0.0")
                 .description("""
                         CRUD de productos con arquitectura hexagonal (Spring Boot + PostgreSQL).
 
