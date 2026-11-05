@@ -22,9 +22,10 @@ USER app
 
 COPY --from=build /app/target/*.jar app.jar
 
-# Render asigna el puerto en la variable PORT (application.yml la lee).
-ENV PORT=8090
-EXPOSE 8090
+# Dentro del contenedor la app escucha en 8080 (en local sigue siendo 8090).
+# Render puede sobrescribirlo con su propia variable PORT; application.yml la lee.
+ENV PORT=8080
+EXPOSE 8080
 
 # MaxRAMPercentage: la JVM usa hasta el 75 % de la memoria del contenedor (planes pequeños de Render).
 ENTRYPOINT ["java", "-XX:MaxRAMPercentage=75", "-jar", "app.jar"]
