@@ -1,0 +1,53 @@
+server:
+  port: 8090
+
+spring:
+  application:
+    name: producto-hex-service
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/topicos_db
+    username: postgres
+    password: bdatos
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      # Flyway es el dueño del esquema; Hibernate solo verifica que la entidad coincida con la tabla
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+    # La tabla productos ya existía en topicos_db antes de usar Flyway.
+    # Con baseline en la versión 1, Flyway marca V1 como aplicada y no intenta recrearla.
+    # En una base de datos vacía, V1 se ejecuta normalmente.
+    baseline-on-migrate: true
+    baseline-version: 1
+
+logging:
+  level:
+    # INFO: peticiones recibidas y resultado de cada caso de uso.
+    # Cambiar a DEBUG para ver también las operaciones contra la BD y los detalles internos.
+    "[com.ejemplo.producto]": INFO
+  # Además de la consola, los logs se guardan en este archivo (ruta relativa a donde se ejecuta la app).
+  file:
+    name: logs/producto-hex-service.log
+  # Rotación: cada día o al llegar a 10 MB se crea un archivo nuevo (comprimido .gz);
+  # se guardan 30 días y como máximo 1 GB en total.
+  logback:
+    rollingpolicy:
+      file-name-pattern: logs/producto-hex-service-%d{yyyy-MM-dd}.%i.log.gz
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 1GB
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method

@@ -1,0 +1,224 @@
+<mxfile host="Electron" agent="Claude Code">
+  <diagram id="arquitectura-hexagonal" name="Arquitectura hexagonal">
+    <mxGraphModel dx="1704" dy="1013" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1750" pageHeight="1000" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="titulo" parent="1" style="text;html=1;fontSize=22;align=center;verticalAlign=middle;" value="&lt;b&gt;producto-service&lt;/b&gt; · Arquitectura hexagonal (puertos y adaptadores)" vertex="1">
+          <mxGeometry height="40" width="900" x="400" y="10" as="geometry" />
+        </mxCell>
+        <mxCell id="bgIn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#dae8fc;strokeColor=#6c8ebf;verticalAlign=top;fontStyle=1;fontSize=14;spacingTop=6;" value="adapters/in/web&lt;br&gt;&lt;i&gt;Adaptador de entrada&lt;/i&gt;" vertex="1">
+          <mxGeometry height="420" width="270" x="190" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="hex" parent="1" style="shape=hexagon;perimeter=hexagonPerimeter2;whiteSpace=wrap;html=1;fixedSize=0;size=0.1;fillColor=#fff2cc;strokeColor=#d6b656;verticalAlign=top;fontStyle=1;fontSize=16;spacingTop=40;strokeWidth=2;" value="core&lt;br&gt;&lt;i&gt;Núcleo: no depende de Spring, JPA ni HTTP&lt;/i&gt;" vertex="1">
+          <mxGeometry height="660" width="720" x="490" y="80" as="geometry" />
+        </mxCell>
+        <mxCell id="bgOut" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#d5e8d4;strokeColor=#82b366;verticalAlign=top;fontStyle=1;fontSize=14;spacingTop=6;" value="adapters/out/persistence&lt;br&gt;&lt;i&gt;Adaptador de salida&lt;/i&gt;" vertex="1">
+          <mxGeometry height="420" width="280" x="1250" y="200" as="geometry" />
+        </mxCell>
+        <mxCell id="grpPortsIn" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#ffffff;strokeColor=#d6b656;dashed=1;verticalAlign=top;fontStyle=1;" value="ports/in" vertex="1">
+          <mxGeometry height="300" width="200" x="545" y="195" as="geometry" />
+        </mxCell>
+        <mxCell id="grpUseCase" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#ffffff;strokeColor=#d6b656;dashed=1;verticalAlign=top;fontStyle=1;" value="usecase" vertex="1">
+          <mxGeometry height="240" width="170" x="760" y="195" as="geometry" />
+        </mxCell>
+        <mxCell id="grpPortsOut" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#ffffff;strokeColor=#d6b656;dashed=1;verticalAlign=top;fontStyle=1;" value="ports/out" vertex="1">
+          <mxGeometry height="200" width="210" x="965" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="grpModel" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#ffffff;strokeColor=#d6b656;dashed=1;verticalAlign=top;fontStyle=1;" value="model" vertex="1">
+          <mxGeometry height="160" width="200" x="745" y="500" as="geometry" />
+        </mxCell>
+        <mxCell id="cliente" parent="1" style="shape=umlActor;verticalLabelPosition=bottom;verticalAlign=top;html=1;outlineConnect=0;" value="Cliente HTTP&lt;br&gt;Swagger UI / curl" vertex="1">
+          <mxGeometry height="70" width="40" x="70" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="controller" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;ProductoController&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;@RestController /api/productos&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="230" x="210" y="260" as="geometry" />
+        </mxCell>
+        <mxCell id="handler" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;GlobalExceptionHandler&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Excepciones → RespuestaApi (400/404/405/409/500)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="230" x="210" y="330" as="geometry" />
+        </mxCell>
+        <mxCell id="dtos" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;dto/&lt;/b&gt;&lt;br&gt;CrearProductoRequest&lt;br&gt;CambiarPrecioRequest&lt;br&gt;ProductoResponse&lt;br&gt;&lt;b&gt;RespuestaApi&amp;lt;T&amp;gt;&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;{ message, timestamp, data, status }&lt;/font&gt;" vertex="1">
+          <mxGeometry height="110" width="230" x="210" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="docSwagger" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#f5f5f5;strokeColor=#6c8ebf;dashed=1;" value="&lt;b&gt;doc/&lt;/b&gt; &lt;font style=&quot;font-size:10px&quot;&gt;(solo Swagger)&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;EjemplosRespuesta · RespuestaProductoDoc&lt;br&gt;RespuestaListaProductosDoc&lt;/font&gt;" vertex="1">
+          <mxGeometry height="55" width="230" x="210" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="notaRespuesta" parent="1" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;size=14;fillColor=#fff2cc;strokeColor=#d6b656;align=left;spacingLeft=8;verticalAlign=top;" value="&lt;b&gt;Formato de respuesta&lt;/b&gt;&lt;br&gt;&lt;font face=&quot;Courier New&quot; style=&quot;font-size:10px&quot;&gt;{&lt;br&gt;&amp;nbsp;&quot;message&quot;: &quot;...&quot;,&lt;br&gt;&amp;nbsp;&quot;timestamp&quot;: &quot;...&quot;,&lt;br&gt;&amp;nbsp;&quot;data&quot;: { ... } | null,&lt;br&gt;&amp;nbsp;&quot;status&quot;: 200&lt;br&gt;}&lt;/font&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Éxito y error usan&lt;br&gt;el mismo formato&lt;/font&gt;" vertex="1">
+          <mxGeometry height="190" width="160" x="20" y="390" as="geometry" />
+        </mxCell>
+        <mxCell id="pinCrear" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontSize=11;fontColor=#ffffff;" value="«interface»&lt;br&gt;&lt;b&gt;CrearProductoPortIn&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="170" x="560" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="pinObtener" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="«interface»&lt;br&gt;&lt;b&gt;ObtenerProductoPortIn&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="170" x="560" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="pinPrecio" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="«interface»&lt;br&gt;&lt;b&gt;CambiarPrecioProductoPortIn&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="170" x="560" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="pinEliminar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="«interface»&lt;br&gt;&lt;b&gt;EliminarProductoPortIn&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="170" x="560" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="command" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;dashed=1;fontSize=11;fontColor=#ffffff;" value="«record»&lt;br&gt;&lt;b&gt;CrearProductoCommand&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="170" x="560" y="435" as="geometry" />
+        </mxCell>
+        <mxCell id="ucCrear" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;container=1;" value="&lt;b&gt;CrearProducto&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="140" x="775" y="225" as="geometry" />
+        </mxCell>
+        <mxCell id="ucObtener" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;" value="&lt;b&gt;ObtenerProducto&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="140" x="775" y="275" as="geometry" />
+        </mxCell>
+        <mxCell id="ucPrecio" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" value="&lt;b&gt;CambiarPrecioProducto&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="140" x="775" y="325" as="geometry" />
+        </mxCell>
+        <mxCell id="ucEliminar" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#d6b656;" value="&lt;b&gt;EliminarProducto&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="140" x="775" y="375" as="geometry" />
+        </mxCell>
+        <mxCell id="poutBuscar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontSize=11;" value="«interface»&lt;br&gt;&lt;b&gt;BuscarProductoPortOut&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="180" x="980" y="250" as="geometry" />
+        </mxCell>
+        <mxCell id="E79FsR-Rn1YgYSCJ2tvO-1" edge="1" parent="1" source="grpPortsOut" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;defaultLabelBackgroundColor=page;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" target="ucPrecio" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="poutGuardar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontSize=11;fontColor=#ffffff;" value="«interface»&lt;br&gt;&lt;b&gt;GuardarProductoPortOut&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="180" x="980" y="315" as="geometry" />
+        </mxCell>
+        <mxCell id="poutEliminar" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;fontSize=11;" value="«interface»&lt;br&gt;&lt;b&gt;EliminarProductoPortOut&lt;/b&gt;" vertex="1">
+          <mxGeometry height="40" width="180" x="980" y="365" as="geometry" />
+        </mxCell>
+        <mxCell id="producto" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;strokeWidth=2;fontColor=#ffffff;" value="&lt;b&gt;Producto&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Reglas de negocio:&lt;br&gt;precio &amp;gt; 0, máx. 2 decimales&lt;br&gt;código AAA-0000 · stock ≥ 0&lt;/font&gt;" vertex="1">
+          <mxGeometry height="75" width="170" x="760" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="categoria" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;fontSize=11;" value="«enum» &lt;b&gt;Categoria&lt;/b&gt;" vertex="1">
+          <mxGeometry height="32" width="170" x="760" y="612" as="geometry" />
+        </mxCell>
+        <mxCell id="excepciones" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#b85450;" value="&lt;b&gt;exception/&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;PrecioInvalidoException&lt;br&gt;ProductoNoEncontradoException&lt;/font&gt;" vertex="1">
+          <mxGeometry height="60" width="175" x="965" y="525" as="geometry" />
+        </mxCell>
+        <mxCell id="adapter" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;ProductoRepositoryAdapter&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;@Component · implementa los 3 PortOut&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="230" x="1275" y="290" as="geometry" />
+        </mxCell>
+        <mxCell id="mapper" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;ProductoMapper&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Producto ↔ ProductoEntity&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="105" x="1275" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="jpaRepo" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;ProductoJpaRepository&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Spring Data JPA&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="110" x="1395" y="380" as="geometry" />
+        </mxCell>
+        <mxCell id="entity" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;ProductoEntity&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;@Entity @Table(&quot;productos&quot;)&lt;/font&gt;" vertex="1">
+          <mxGeometry height="50" width="230" x="1275" y="480" as="geometry" />
+        </mxCell>
+        <mxCell id="postgres" parent="1" style="shape=cylinder3;whiteSpace=wrap;html=1;boundedLbl=1;backgroundOutline=1;size=12;fillColor=#e1d5e7;strokeColor=#9673a6;" value="&lt;b&gt;PostgreSQL&lt;/b&gt;&lt;br&gt;topicos_db&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;tabla productos&lt;br&gt;Flyway V1&lt;/font&gt;" vertex="1">
+          <mxGeometry height="100" width="120" x="1585" y="360" as="geometry" />
+        </mxCell>
+        <mxCell id="bgConfig" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=6;fillColor=#f5f5f5;strokeColor=#666666;verticalAlign=top;fontStyle=1;" value="config" vertex="1">
+          <mxGeometry height="100" width="430" x="700" y="770" as="geometry" />
+        </mxCell>
+        <mxCell id="beanConfig" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#60a917;strokeColor=#2D7600;fontColor=#ffffff;" value="&lt;b&gt;BeanConfig&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;crea los casos de uso&lt;br&gt;e inyecta los PortOut&lt;/font&gt;" vertex="1">
+          <mxGeometry height="55" width="180" x="720" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="openApi" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#ffffff;strokeColor=#666666;" value="&lt;b&gt;OpenApiConfig&lt;/b&gt;&lt;br&gt;&lt;font style=&quot;font-size:10px&quot;&gt;Swagger: /swagger-ui.html&lt;/font&gt;" vertex="1">
+          <mxGeometry height="55" width="180" x="930" y="800" as="geometry" />
+        </mxCell>
+        <mxCell id="e1" edge="1" parent="1" source="cliente" style="endArrow=classic;html=1;strokeWidth=2;fontSize=11;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="controller" value="petición HTTP / JSON">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1b" edge="1" parent="1" source="controller" style="endArrow=classic;html=1;strokeWidth=2;dashed=1;fontSize=10;strokeColor=#6c8ebf;fontColor=#6c8ebf;exitX=0;exitY=0.8;exitDx=0;exitDy=0;entryX=1;entryY=0.8;entryDx=0;entryDy=0;" target="cliente" value="RespuestaApi">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e1c" edge="1" parent="1" source="notaRespuesta" style="endArrow=none;html=1;dashed=1;dashPattern=1 3;strokeColor=#d6b656;" target="cliente" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2" edge="1" parent="1" source="controller" style="endArrow=classic;html=1;strokeWidth=2;fontSize=11;edgeStyle=orthogonalEdgeStyle;" target="grpPortsIn" value="llama a">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e2b" edge="1" parent="1" source="dtos" style="endArrow=open;html=1;dashed=1;fontSize=10;edgeStyle=orthogonalEdgeStyle;exitX=1;exitY=0.75;exitDx=0;exitDy=0;" target="command" value="aComando()">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r1" edge="1" parent="1" source="ucCrear" style="endArrow=block;endFill=0;dashed=1;html=1;" target="pinCrear" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r2" edge="1" parent="1" source="ucObtener" style="endArrow=block;endFill=0;dashed=1;html=1;" target="pinObtener" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r3" edge="1" parent="1" source="ucPrecio" style="endArrow=block;endFill=0;dashed=1;html=1;" target="pinPrecio" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r4" edge="1" parent="1" source="ucEliminar" style="endArrow=block;endFill=0;dashed=1;html=1;" target="pinEliminar" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e3" edge="1" parent="1" source="grpUseCase" style="endArrow=classic;html=1;strokeWidth=2;fontSize=11;" target="grpPortsOut" value="usa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4" edge="1" parent="1" source="grpUseCase" style="endArrow=classic;html=1;strokeWidth=2;fontSize=11;" target="producto" value="aplica reglas">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e4b" edge="1" parent="1" source="producto" style="endArrow=open;html=1;dashed=1;fontSize=10;" target="excepciones" value="lanza">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="r5" edge="1" parent="1" source="adapter" style="endArrow=block;endFill=0;dashed=1;html=1;strokeWidth=2;fontSize=11;" target="grpPortsOut" value="implementa">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e5" edge="1" parent="1" source="adapter" style="endArrow=classic;html=1;" target="mapper" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e6" edge="1" parent="1" source="adapter" style="endArrow=classic;html=1;" target="jpaRepo" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e7" edge="1" parent="1" source="mapper" style="endArrow=classic;html=1;" target="entity" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e8" edge="1" parent="1" source="jpaRepo" style="endArrow=classic;html=1;strokeWidth=2;fontSize=11;" target="postgres" value="SQL">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="e9" edge="1" parent="1" source="beanConfig" style="endArrow=open;html=1;dashed=1;dashPattern=1 3;strokeWidth=2;fontSize=10;edgeStyle=orthogonalEdgeStyle;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="grpUseCase" value="new CrearProducto(...)">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="660" y="828" />
+              <mxPoint x="660" y="690" />
+              <mxPoint x="740" y="690" />
+              <mxPoint x="740" y="315" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="leyenda" parent="1" style="rounded=1;whiteSpace=wrap;html=1;arcSize=4;fillColor=#ffffff;strokeColor=#999999;verticalAlign=top;align=left;spacingLeft=10;" value="&lt;b&gt;Leyenda&lt;/b&gt;" vertex="1">
+          <mxGeometry height="190" width="390" x="40" y="690" as="geometry" />
+        </mxCell>
+        <mxCell id="lg1a" edge="1" parent="1" style="endArrow=classic;html=1;strokeWidth=2;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="60" y="730" as="sourcePoint" />
+            <mxPoint x="120" y="730" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg1" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" value="usa / llama a (dependencia)" vertex="1">
+          <mxGeometry height="20" width="280" x="130" y="720" as="geometry" />
+        </mxCell>
+        <mxCell id="lg2a" edge="1" parent="1" style="endArrow=block;endFill=0;dashed=1;html=1;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="60" y="760" as="sourcePoint" />
+            <mxPoint x="120" y="760" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg2" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" value="implementa una interfaz (puerto)" vertex="1">
+          <mxGeometry height="20" width="280" x="130" y="750" as="geometry" />
+        </mxCell>
+        <mxCell id="lg3a" edge="1" parent="1" style="endArrow=open;html=1;dashed=1;dashPattern=1 3;strokeWidth=2;" value="">
+          <mxGeometry height="50" relative="1" width="50" as="geometry">
+            <mxPoint x="60" y="790" as="sourcePoint" />
+            <mxPoint x="120" y="790" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="lg3" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" value="crea e inyecta (configuración)" vertex="1">
+          <mxGeometry height="20" width="280" x="130" y="780" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4a" parent="1" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#ffe6cc;strokeColor=#d79b00;" value="" vertex="1">
+          <mxGeometry height="18" width="60" x="60" y="812" as="geometry" />
+        </mxCell>
+        <mxCell id="lg4" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" value="puerto (interface): PortIn / PortOut" vertex="1">
+          <mxGeometry height="20" width="280" x="130" y="811" as="geometry" />
+        </mxCell>
+        <mxCell id="lg5" parent="1" style="text;html=1;align=left;verticalAlign=middle;fontSize=11;" value="&lt;i&gt;Todas las dependencias apuntan hacia el núcleo.&lt;/i&gt;" vertex="1">
+          <mxGeometry height="20" width="350" x="60" y="845" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
