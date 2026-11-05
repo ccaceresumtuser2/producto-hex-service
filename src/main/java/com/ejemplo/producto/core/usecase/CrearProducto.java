@@ -21,8 +21,10 @@ public class CrearProducto implements CrearProductoPortIn {
     @Override
     public Producto crear(CrearProductoCommand comando) {
         log.debug("Creando producto codigo={}, nombre={}", comando.codigo(), comando.nombre());
+        // 1. El dominio valida los datos; si algo no es válido lanza la excepción aquí mismo.
         Producto producto = Producto.crear(comando.codigo(), comando.nombre(), comando.descripcion(),
                 comando.precio(), comando.stock(), comando.categoria());
+        // 2. Se guarda a través del puerto de salida; la base de datos asigna el id.
         Producto guardado = guardarProducto.guardar(producto);
         log.info("Producto creado id={}, codigo={}", guardado.getId(), guardado.getCodigo());
         return guardado;

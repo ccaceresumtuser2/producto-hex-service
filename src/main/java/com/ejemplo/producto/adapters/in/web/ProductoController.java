@@ -48,6 +48,7 @@ public class ProductoController {
     private static final Logger log = LoggerFactory.getLogger(ProductoController.class);
     private static final String JSON = "application/json";
 
+    // Depende de los puertos (interfaces), no de las clases de casos de uso: Spring inyecta los beans de BeanConfig.
     private final CrearProductoPortIn crearProducto;
     private final ObtenerProductoPortIn obtenerProducto;
     private final CambiarPrecioProductoPortIn cambiarPrecioProducto;
@@ -78,6 +79,7 @@ public class ProductoController {
     public ResponseEntity<RespuestaApi<ProductoResponse>> crear(@Valid @RequestBody CrearProductoRequest request) {
         log.info("POST /api/productos - crear producto codigo={}", request.codigo());
         Producto creado = crearProducto.crear(request.aComando());
+        // 201 Created incluye la cabecera Location con la URL del nuevo recurso: /api/productos/{id}
         URI ubicacion = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}").buildAndExpand(creado.getId()).toUri();
         return ResponseEntity.created(ubicacion).body(RespuestaApi.nueva(
@@ -140,6 +142,7 @@ public class ProductoController {
     public ResponseEntity<RespuestaApi<Void>> eliminar(@PathVariable Long id) {
         log.info("DELETE /api/productos/{} - eliminar producto", id);
         eliminarProducto.eliminar(id);
+        // Se responde 200 con mensaje (y no 204 sin cuerpo) para mantener el formato RespuestaApi.
         return RespuestaApi.ok(null, "Producto eliminado correctamente");
     }
 }

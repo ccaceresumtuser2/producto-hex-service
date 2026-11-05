@@ -40,6 +40,7 @@ import java.time.LocalDateTime;
         constraints = "categoria IN ('TECNOLOGIA', 'HOGAR', 'ROPA', 'ALIMENTOS', 'OTROS')")
 public class ProductoEntity {
 
+    // IDENTITY: el id lo genera la base de datos al insertar.
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -59,6 +60,7 @@ public class ProductoEntity {
     @Column(name = "stock", nullable = false)
     private Integer stock;
 
+    // STRING guarda el nombre (TECNOLOGIA) en lugar de la posición (0, 1, ...), que cambiaría al reordenar el enum.
     @Enumerated(EnumType.STRING)
     @Column(name = "categoria", nullable = false, length = 20)
     private Categoria categoria;
@@ -66,6 +68,7 @@ public class ProductoEntity {
     @Column(name = "activo", nullable = false)
     private Boolean activo;
 
+    // updatable = false: Hibernate nunca la incluye en un UPDATE.
     @Column(name = "fecha_creacion", nullable = false, updatable = false)
     private LocalDateTime fechaCreacion;
 
@@ -73,6 +76,7 @@ public class ProductoEntity {
         // requerido por JPA
     }
 
+    /** Usado por ProductoMapper. id null significa producto nuevo (INSERT). */
     public ProductoEntity(Long id, String codigo, String nombre, String descripcion, BigDecimal precio,
                           Integer stock, Categoria categoria, Boolean activo, LocalDateTime fechaCreacion) {
         this.id = id;

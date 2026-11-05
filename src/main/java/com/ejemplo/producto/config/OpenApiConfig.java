@@ -5,7 +5,10 @@ import io.swagger.v3.oas.models.info.Info;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-/** Información general que se muestra en Swagger UI. */
+/**
+ * Información general que se muestra en Swagger UI (/swagger-ui.html).
+ * La documentación de cada endpoint está en las anotaciones de ProductoController.
+ */
 @Configuration
 public class OpenApiConfig {
 

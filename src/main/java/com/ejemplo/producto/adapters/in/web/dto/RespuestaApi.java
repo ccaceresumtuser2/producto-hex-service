@@ -40,14 +40,17 @@ public record RespuestaApi<T>(
         return new RespuestaApi<>(mensaje, LocalDateTime.now(), data, estado.value());
     }
 
+    /** Respuesta HTTP completa con el estado indicado. */
     public static <T> ResponseEntity<RespuestaApi<T>> de(HttpStatus estado, T data, String mensaje) {
         return ResponseEntity.status(estado).body(nueva(estado, data, mensaje));
     }
 
+    /** Atajo para 200 OK. */
     public static <T> ResponseEntity<RespuestaApi<T>> ok(T data, String mensaje) {
         return de(HttpStatus.OK, data, mensaje);
     }
 
+    /** Atajo para errores: data es null. */
     public static <T> ResponseEntity<RespuestaApi<T>> error(HttpStatus estado, String mensaje) {
         return de(estado, null, mensaje);
     }

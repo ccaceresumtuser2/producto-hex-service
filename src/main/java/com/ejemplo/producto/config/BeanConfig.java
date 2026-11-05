@@ -21,6 +21,9 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class BeanConfig {
 
+    // Cada método devuelve un puerto de entrada (interfaz) y recibe los puertos de salida que necesita.
+    // Spring los encuentra en ProductoRepositoryAdapter, que implementa los tres.
+
     @Bean
     public CrearProductoPortIn crearProductoPortIn(GuardarProductoPortOut guardar) {
         return new CrearProducto(guardar);

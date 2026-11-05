@@ -23,6 +23,7 @@ public class EliminarProducto implements EliminarProductoPortIn {
 
     @Override
     public void eliminar(Long id) {
+        // Se verifica antes para responder 404 en lugar de no borrar nada en silencio.
         if (!buscarProducto.existePorId(id)) {
             log.info("No se puede eliminar: no existe el producto id={}", id);
             throw new ProductoNoEncontradoException(id);

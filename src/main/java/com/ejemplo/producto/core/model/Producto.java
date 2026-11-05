@@ -14,10 +14,13 @@ import java.util.regex.Pattern;
  */
 public class Producto {
 
+    /** Formato del código: 3 letras mayúsculas, guion y 4 dígitos (p. ej. TEC-0010). */
     private static final Pattern PATRON_CODIGO = Pattern.compile("^[A-Z]{3}-[0-9]{4}$");
+    /** Mayor valor que cabe en la columna NUMERIC(12, 2). */
     private static final BigDecimal PRECIO_MAXIMO = new BigDecimal("9999999999.99");
 
-    private final Long id;
+    // Todos los campos son final salvo el precio: es lo único que el negocio permite cambiar.
+    private final Long id;          // null mientras el producto no se ha guardado
     private final String codigo;
     private final String nombre;
     private final String descripcion;
@@ -27,6 +30,10 @@ public class Producto {
     private final boolean activo;
     private final LocalDateTime fechaCreacion;
 
+    /**
+     * Constructor privado: obliga a usar {@link #crear} o {@link #reconstruir}.
+     * Valida todos los datos, así nunca existe un Producto en estado inválido.
+     */
     private Producto(Long id, String codigo, String nombre, String descripcion, BigDecimal precio,
                      int stock, Categoria categoria, boolean activo, LocalDateTime fechaCreacion) {
         this.id = id;
@@ -55,10 +62,16 @@ public class Producto {
                 activo, fechaCreacion);
     }
 
-    /** Regla de negocio: el nuevo precio debe ser válido. */
+    /**
+     * Regla de negocio: el nuevo precio debe ser válido.
+     *
+     * @throws PrecioInvalidoException si el precio es nulo, no positivo, tiene más de 2 decimales o supera el máximo
+     */
     public void cambiarPrecio(BigDecimal nuevoPrecio) {
         this.precio = validarPrecio(nuevoPrecio);
     }
+
+    // --- Validaciones: devuelven el valor normalizado o lanzan una excepción con el motivo ---
 
     private static String validarCodigo(String codigo) {
         if (codigo == null || !PATRON_CODIGO.matcher(codigo).matches()) {
@@ -72,7 +85,7 @@ public class Producto {
         if (nombre == null || nombre.isBlank()) {
             throw new IllegalArgumentException("El nombre es obligatorio");
         }
-        String limpio = nombre.trim();
+        String limpio = nombre.trim();   // se guarda sin espacios al inicio ni al final
         if (limpio.length() > 100) {
             throw new IllegalArgumentException("El nombre no puede superar 100 caracteres");
         }
@@ -81,7 +94,7 @@ public class Producto {
 
     private static String validarDescripcion(String descripcion) {
         if (descripcion == null || descripcion.isBlank()) {
-            return null;
+            return null;   // es opcional: vacía se trata igual que ausente
         }
         if (descripcion.length() > 255) {
             throw new IllegalArgumentException("La descripción no puede superar 255 caracteres");
@@ -96,12 +109,14 @@ public class Producto {
         if (precio.signum() <= 0) {
             throw new PrecioInvalidoException("El precio debe ser mayor que cero");
         }
+        // stripTrailingZeros acepta 10.500 (= 10.50) pero rechaza 10.555
         if (precio.stripTrailingZeros().scale() > 2) {
             throw new PrecioInvalidoException("El precio admite como máximo 2 decimales");
         }
         if (precio.compareTo(PRECIO_MAXIMO) > 0) {
             throw new PrecioInvalidoException("El precio no puede superar " + PRECIO_MAXIMO);
         }
+        // Siempre 2 decimales (10 -> 10.00). UNNECESSARY nunca redondea: ya se validó que no hace falta.
         return precio.setScale(2, RoundingMode.UNNECESSARY);
     }
 
@@ -111,6 +126,8 @@ public class Producto {
         }
         return stock;
     }
+
+    // --- Getters (no hay setters: los cambios pasan por métodos de negocio como cambiarPrecio) ---
 
     public Long getId() { return id; }
     public String getCodigo() { return codigo; }

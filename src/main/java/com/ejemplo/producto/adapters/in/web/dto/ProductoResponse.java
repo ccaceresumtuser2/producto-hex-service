@@ -6,7 +6,10 @@ import com.ejemplo.producto.core.model.Producto;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-/** Datos devueltos al cliente. */
+/**
+ * Datos devueltos al cliente.
+ * Separar este DTO del modelo permite cambiar el dominio sin romper el JSON que reciben los clientes.
+ */
 public record ProductoResponse(
         Long id,
         String codigo,
@@ -19,6 +22,7 @@ public record ProductoResponse(
         LocalDateTime fechaCreacion
 ) {
 
+    /** Convierte un producto del dominio al formato de la API. */
     public static ProductoResponse desde(Producto p) {
         return new ProductoResponse(p.getId(), p.getCodigo(), p.getNombre(), p.getDescripcion(),
                 p.getPrecio(), p.getStock(), p.getCategoria(), p.isActivo(), p.getFechaCreacion());

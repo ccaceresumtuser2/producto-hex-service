@@ -41,6 +41,8 @@ public class ProductoRepositoryAdapter
         return jpaRepository.findAll().stream().map(mapper::aDominio).toList();
     }
 
+    // saveAndFlush (y no save) envía el INSERT/UPDATE de inmediato: así una violación del índice único
+    // se lanza aquí como DataIntegrityViolationException y GlobalExceptionHandler responde 409.
     @Override
     public Producto guardar(Producto producto) {
         log.debug("BD: saveAndFlush(id={}, codigo={})", producto.getId(), producto.getCodigo());
