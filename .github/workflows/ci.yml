@@ -10,16 +10,16 @@ on:
 jobs:
   build:
     name: Compilar y probar
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     # No hace falta PostgreSQL: las pruebas usan H2 en memoria (src/test/resources/application-test.yml).
 
     steps:
       - name: Descargar el código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Instalar Java 21
-        uses: actions/setup-java@v4
+        uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
@@ -33,7 +33,7 @@ jobs:
         run: ./mvnw -B verify
 
       - name: Publicar el jar
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: producto-hex-service
           path: target/*.jar
@@ -41,7 +41,7 @@ jobs:
 
       - name: Publicar reportes de pruebas si fallan
         if: failure()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: reportes-pruebas
           path: target/surefire-reports/
@@ -52,32 +52,32 @@ jobs:
     name: Imagen Docker y despliegue en Render
     needs: build
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write   # necesario para subir la imagen a ghcr.io
 
     steps:
       - name: Descargar el código
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # ghcr.io exige el nombre del repositorio en minúsculas.
       - name: Nombre de la imagen
         run: echo "IMAGEN=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_ENV"
 
       - name: Iniciar sesión en ghcr.io
-        uses: docker/login-action@v3
+        uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Preparar Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       # Dos etiquetas: "latest" y el hash del commit (para saber exactamente qué versión corre).
       - name: Construir y subir la imagen
-        uses: docker/build-push-action@v6
+        uses: docker/build-push-action@v7
         with:
           context: .
           push: true
