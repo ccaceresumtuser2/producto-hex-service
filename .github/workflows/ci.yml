@@ -12,28 +12,7 @@ jobs:
     name: Compilar y probar
     runs-on: ubuntu-latest
 
-    # ProductoRepositoryAdapterTest usa PostgreSQL real, así que se levanta uno para las pruebas.
-    # Flyway crea la tabla al arrancar (V1__crear_tabla_productos.sql).
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_DB: topicos_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    # Sobrescriben la conexión de application.yml solo en CI (no se usa la contraseña local).
-    env:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/topicos_db
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: postgres
+    # No hace falta PostgreSQL: las pruebas usan H2 en memoria (src/test/resources/application-test.yml).
 
     steps:
       - name: Descargar el código

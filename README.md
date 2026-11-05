@@ -12,6 +12,7 @@ API REST de productos construida con **arquitectura hexagonal** (puertos y adapt
 | Flyway | migraciones de base de datos |
 | springdoc-openapi | 2.8.9 (Swagger UI) |
 | JUnit 5 + Mockito + MockMvc | pruebas |
+| H2 | base de datos en memoria para las pruebas |
 
 ## Requisitos
 
@@ -331,6 +332,6 @@ mvn test
 | `ProductoTest` | Reglas de negocio del modelo | Nada (Java puro) |
 | `CambiarPrecioProductoTest` | Caso de uso con repositorio simulado (Mockito) | Nada |
 | `ProductoControllerTest` | Endpoints y códigos HTTP (MockMvc) | Nada |
-| `ProductoRepositoryAdapterTest` | Acceso real a la base de datos | PostgreSQL con `topicos_db` |
+| `ProductoRepositoryAdapterTest` | Acceso a la base de datos (JPA + migraciones Flyway) | Nada (H2 en memoria) |
 
-La prueba de persistencia revierte cada transacción, así que no deja datos en la base.
+La prueba de persistencia usa el perfil `test` (`src/test/resources/application-test.yml`): una base H2 en memoria en modo PostgreSQL, donde Flyway ejecuta las mismas migraciones. No hace falta tener PostgreSQL instalado para correr `mvn test`.
