@@ -10,5 +10,6 @@ public enum Categoria {
     ROPA,
     ALIMENTOS,
     BEBIDAS,
+    COMIDA,
     OTROS
 }
