@@ -312,13 +312,14 @@ Tabla `productos`:
 | `descripcion` | `VARCHAR(255)` | opcional |
 | `precio` | `NUMERIC(12,2)` | `> 0` |
 | `stock` | `INTEGER` | `>= 0` |
-| `categoria` | `VARCHAR(20)` | `TECNOLOGIA`, `HOGAR`, `ROPA`, `ALIMENTOS`, `OTROS` |
+| `categoria` | `VARCHAR(20)` | `TECNOLOGIA`, `HOGAR`, `ROPA`, `ALIMENTOS`, `BEBIDAS`, `COMIDA`, `OTROS` |
 | `activo` | `BOOLEAN` | obligatorio |
 | `fecha_creacion` | `TIMESTAMP(6)` | obligatorio |
 
 Índices: `uk_productos_codigo` (único), `idx_productos_nombre`, `idx_productos_categoria`, `idx_productos_categoria_activo`.
 
-> Índices y restricciones `CHECK` están declarados en `ProductoEntity` (`@Table`, `@Check`). Si la tabla ya existe, Hibernate no la recrea.
+> Índices y restricciones `CHECK` están declarados en `ProductoEntity` (`@Table`, `@Check`). Si la tabla ya existe, Hibernate no la recrea ni modifica sus `CHECK`.
+> Al agregar una categoría al enum `Categoria`, actualice el `@Check` y ejecute [docs/sql/actualizar-ck-productos-categoria.sql](docs/sql/actualizar-ck-productos-categoria.sql) en cada base existente.
 
 ## Pruebas
 

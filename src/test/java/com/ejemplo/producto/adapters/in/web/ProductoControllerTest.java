@@ -3,6 +3,7 @@ package com.ejemplo.producto.adapters.in.web;
 import com.ejemplo.producto.core.exception.PrecioInvalidoException;
 import com.ejemplo.producto.core.exception.ProductoNoEncontradoException;
 import com.ejemplo.producto.core.model.Categoria;
+import com.ejemplo.producto.core.model.FiltroProducto;
 import com.ejemplo.producto.core.model.Producto;
 import com.ejemplo.producto.core.ports.in.CambiarPrecioProductoPortIn;
 import com.ejemplo.producto.core.ports.in.CrearProductoCommand;
@@ -133,13 +134,51 @@ class ProductoControllerTest {
 
     @Test
     void listarDevuelveArreglo() throws Exception {
-        when(obtenerProducto.listar()).thenReturn(List.of(producto(new BigDecimal("1500.50"))));
+        when(obtenerProducto.filtrar(FiltroProducto.vacio()))
+                .thenReturn(List.of(producto(new BigDecimal("1500.50"))));
 
         mockMvc.perform(get("/api/productos"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value(200))
                 .andExpect(jsonPath("$.message").value("Se encontraron 1 productos"))
                 .andExpect(jsonPath("$.data.length()").value(1));
+    }
+
+    @Test
+    void listarConFiltrosLosPasaAlPuerto() throws Exception {
+        FiltroProducto esperado = new FiltroProducto("tecl", Categoria.TECNOLOGIA, true,
+                new BigDecimal("100"), new BigDecimal("2000"));
+        when(obtenerProducto.filtrar(esperado)).thenReturn(List.of(producto(new BigDecimal("1500.50"))));
+
+        mockMvc.perform(get("/api/productos")
+                        .param("nombre", "tecl")
+                        .param("categoria", "TECNOLOGIA")
+                        .param("activo", "true")
+                        .param("precioMin", "100")
+                        .param("precioMax", "2000"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.length()").value(1))
+                .andExpect(jsonPath("$.data[0].codigo").value("TEC-0001"));
+    }
+
+    @Test
+    void listarConRangoDePrecioInvertidoDevuelve400() throws Exception {
+        mockMvc.perform(get("/api/productos").param("precioMin", "500").param("precioMax", "100"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.status").value(400))
+                .andExpect(jsonPath("$.message")
+                        .value("El precio mínimo no puede ser mayor que el precio máximo"));
+
+        verifyNoInteractions(obtenerProducto);
+    }
+
+    @Test
+    void listarConCategoriaInexistenteDevuelve400() throws Exception {
+        mockMvc.perform(get("/api/productos").param("categoria", "JUGUETES"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.message").value("El parámetro 'categoria' tiene un valor inválido: JUGUETES"));
+
+        verifyNoInteractions(obtenerProducto);
     }
 
     @Test

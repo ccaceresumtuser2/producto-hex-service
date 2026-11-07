@@ -1,6 +1,7 @@
 package com.ejemplo.producto.core.usecase;
 
 import com.ejemplo.producto.core.exception.ProductoNoEncontradoException;
+import com.ejemplo.producto.core.model.FiltroProducto;
 import com.ejemplo.producto.core.model.Producto;
 import com.ejemplo.producto.core.ports.in.ObtenerProductoPortIn;
 import com.ejemplo.producto.core.ports.out.BuscarProductoPortOut;
@@ -35,6 +36,16 @@ public class ObtenerProducto implements ObtenerProductoPortIn {
     public List<Producto> listar() {
         List<Producto> productos = buscarProducto.buscarTodos();
         log.debug("Listado de productos: {} encontrados", productos.size());
+        return productos;
+    }
+
+    @Override
+    public List<Producto> filtrar(FiltroProducto filtro) {
+        if (filtro == null || filtro.estaVacio()) {
+            return listar();
+        }
+        List<Producto> productos = buscarProducto.buscarPorFiltro(filtro);
+        log.debug("Filtro {}: {} encontrados", filtro, productos.size());
         return productos;
     }
 }

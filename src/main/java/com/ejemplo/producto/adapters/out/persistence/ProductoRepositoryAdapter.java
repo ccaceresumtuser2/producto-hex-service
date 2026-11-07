@@ -1,5 +1,6 @@
 package com.ejemplo.producto.adapters.out.persistence;
 
+import com.ejemplo.producto.core.model.FiltroProducto;
 import com.ejemplo.producto.core.model.Producto;
 import com.ejemplo.producto.core.ports.out.BuscarProductoPortOut;
 import com.ejemplo.producto.core.ports.out.EliminarProductoPortOut;
@@ -39,6 +40,13 @@ public class ProductoRepositoryAdapter
     public List<Producto> buscarTodos() {
         log.debug("BD: findAll()");
         return jpaRepository.findAll().stream().map(mapper::aDominio).toList();
+    }
+
+    @Override
+    public List<Producto> buscarPorFiltro(FiltroProducto filtro) {
+        log.debug("BD: findAll(Specification) con {}", filtro);
+        return jpaRepository.findAll(ProductoSpecifications.desde(filtro)).stream()
+                .map(mapper::aDominio).toList();
     }
 
     // saveAndFlush (y no save) envía el INSERT/UPDATE de inmediato: así una violación del índice único

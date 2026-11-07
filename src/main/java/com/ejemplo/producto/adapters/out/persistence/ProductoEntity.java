@@ -36,8 +36,11 @@ import java.time.LocalDateTime;
 @Check(name = "ck_productos_codigo", constraints = "codigo ~ '^[A-Z]{3}-[0-9]{4}$'")
 @Check(name = "ck_productos_precio", constraints = "precio > 0")
 @Check(name = "ck_productos_stock", constraints = "stock >= 0")
+// Debe listar todas las constantes de Categoria. Si se agrega una, actualizar aquí y en las bases existentes
+// (Hibernate no modifica un CHECK de una tabla ya creada): ver docs/sql/actualizar-ck-productos-categoria.sql.
+// ProductoRepositoryAdapterTest.aceptaTodasLasCategorias falla si este CHECK queda desactualizado.
 @Check(name = "ck_productos_categoria",
-        constraints = "categoria IN ('TECNOLOGIA', 'HOGAR', 'ROPA', 'ALIMENTOS', 'OTROS')")
+        constraints = "categoria IN ('TECNOLOGIA', 'HOGAR', 'ROPA', 'ALIMENTOS', 'BEBIDAS', 'COMIDA', 'OTROS')")
 public class ProductoEntity {
 
     // IDENTITY: el id lo genera la base de datos al insertar.

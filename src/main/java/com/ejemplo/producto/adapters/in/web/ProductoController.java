@@ -4,6 +4,8 @@ import com.ejemplo.producto.adapters.in.web.dto.CambiarPrecioRequest;
 import com.ejemplo.producto.adapters.in.web.dto.CrearProductoRequest;
 import com.ejemplo.producto.adapters.in.web.dto.ProductoResponse;
 import com.ejemplo.producto.adapters.in.web.dto.RespuestaApi;
+import com.ejemplo.producto.core.model.Categoria;
+import com.ejemplo.producto.core.model.FiltroProducto;
 import com.ejemplo.producto.core.model.Producto;
 import com.ejemplo.producto.core.ports.in.CambiarPrecioProductoPortIn;
 import com.ejemplo.producto.core.ports.in.CrearProductoPortIn;
@@ -13,6 +15,7 @@ import com.ejemplo.producto.adapters.in.web.doc.EjemplosRespuesta;
 import com.ejemplo.producto.adapters.in.web.doc.RespuestaListaProductosDoc;
 import com.ejemplo.producto.adapters.in.web.doc.RespuestaProductoDoc;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -30,9 +33,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.math.BigDecimal;
 import java.net.URI;
 import java.util.List;
 
@@ -100,14 +105,28 @@ public class ProductoController {
                 "Producto encontrado");
     }
 
-    @Operation(summary = "Listar todos los productos")
+    @Operation(summary = "Listar productos, con filtros opcionales",
+            description = "Sin parámetros devuelve todos. Los filtros presentes se combinan con Y (AND).")
     @ApiResponse(responseCode = "200", description = "Lista de productos",
             content = @Content(mediaType = JSON, schema = @Schema(implementation = RespuestaListaProductosDoc.class),
                     examples = @ExampleObject(value = EjemplosRespuesta.LISTA)))
+    @ApiResponse(responseCode = "400", description = "Filtro inválido (p. ej. precioMin > precioMax o categoría inexistente)",
+            content = @Content(mediaType = JSON, schema = @Schema(implementation = RespuestaApi.class)))
     @GetMapping
-    public ResponseEntity<RespuestaApi<List<ProductoResponse>>> listar() {
-        log.info("GET /api/productos - listar productos");
-        List<ProductoResponse> productos = obtenerProducto.listar().stream()
+    public ResponseEntity<RespuestaApi<List<ProductoResponse>>> listar(
+            @Parameter(description = "Texto contenido en el nombre (sin distinguir mayúsculas)", example = "teclado")
+            @RequestParam(required = false) String nombre,
+            @Parameter(description = "Categoría exacta", example = "TECNOLOGIA")
+            @RequestParam(required = false) Categoria categoria,
+            @Parameter(description = "true = solo activos, false = solo inactivos", example = "true")
+            @RequestParam(required = false) Boolean activo,
+            @Parameter(description = "Precio mínimo (inclusive)", example = "100000")
+            @RequestParam(required = false) BigDecimal precioMin,
+            @Parameter(description = "Precio máximo (inclusive)", example = "200000")
+            @RequestParam(required = false) BigDecimal precioMax) {
+        FiltroProducto filtro = new FiltroProducto(nombre, categoria, activo, precioMin, precioMax);
+        log.info("GET /api/productos - listar productos con {}", filtro);
+        List<ProductoResponse> productos = obtenerProducto.filtrar(filtro).stream()
                 .map(ProductoResponse::desde).toList();
         log.debug("Se devuelven {} productos", productos.size());
         return RespuestaApi.ok(productos, "Se encontraron " + productos.size() + " productos");
