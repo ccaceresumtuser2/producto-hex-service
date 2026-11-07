@@ -9,5 +9,6 @@ public enum Categoria {
     HOGAR,
     ROPA,
     ALIMENTOS,
+    BEBIDAS,
     OTROS
 }
