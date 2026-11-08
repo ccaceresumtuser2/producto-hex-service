@@ -17,6 +17,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
 /**
+ * autor carlos caceres
  * Representa la tabla productos con JPA. Solo vive en el adaptador de persistencia.
  * <p>
  * Hibernate crea la tabla si no existe (ddl-auto: update). Por eso aquí se declaran también

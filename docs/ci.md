@@ -86,6 +86,15 @@ En la pestaña **Environment** del servicio:
 
 Debe ser un **secreto**, no una variable, porque cualquiera que tenga esa URL puede lanzar despliegues.
 
+### Paso 5b: permitir que el workflow espere a Render (opcional, recomendado)
+
+El deploy hook solo **inicia** el despliegue; Render lo hace después en segundo plano. Para que el workflow espere a que termine (y quede en rojo si falla):
+
+1. En Render, entre en **Account Settings** → **API Keys** → **Create API Key** y copie la clave.
+2. En GitHub, cree otro secreto de repositorio llamado `RENDER_API_KEY` con esa clave.
+
+Sin este secreto el workflow sigue funcionando, pero termina en cuanto Render acepta el aviso, sin esperar a que la app esté en línea.
+
 ### Paso 6: desactivar el Auto-Deploy de Render
 
 En Render, entre en **Settings** y ponga **Auto-Deploy** en **No**. Así solo despliega GitHub Actions, después de que pasen las pruebas.
@@ -124,6 +133,7 @@ if: github.event_name == 'push' && github.ref == 'refs/heads/main'   # solo en p
 | 4 | Preparar Docker Buildx | Prepara el constructor de imágenes con soporte de caché. |
 | 5 | Construir y subir la imagen | Ejecuta el `Dockerfile` y sube la imagen con dos etiquetas. |
 | 6 | Desplegar en Render | Hace un `POST` a la URL del deploy hook y muestra la respuesta. |
+| 7 | Esperar a que Render termine el despliegue | Consulta la API de Render cada 15 s hasta que el despliegue quede `live` (verde) o falle (rojo). Máximo 15 minutos. Requiere `RENDER_API_KEY`. |
 
 Las dos etiquetas de la imagen sirven para cosas distintas:
 
@@ -189,6 +199,8 @@ La raíz `/` devuelve 404 porque la app no define esa ruta. Use `/api/productos`
 |---|---|---|
 | `package ...ports.out does not exist` en CI, pero en local compila | Una regla `out/` en `.gitignore` también ignora los paquetes `out` del código | Usar `/out/`, que solo ignora la carpeta de la raíz, y subir los paquetes |
 | El workflow sale en verde, pero Render no despliega | Falta el secreto `RENDER_DEPLOY_HOOK_URL` | Crearlo (paso 5). Busque el aviso en el paso **Desplegar en Render** |
+| El workflow termina, pero Render sigue desplegando | Falta `RENDER_API_KEY`, así que el workflow no espera | Crearlo (paso 5b) |
+| El paso **Esperar a que Render termine** falla con HTTP 401 | `RENDER_API_KEY` inválida o revocada | Crear una clave nueva en Render y actualizar el secreto |
 | `curl: (22) ... error: 400` o HTTP 400 al desplegar | Render rechazó la petición; ocurrió al enviar `imgURL` en la URL del hook | Llamar al hook sin `imgURL` y revisar que el secreto sea el del servicio web |
 | `No open ports detected` en Render | La app todavía está arrancando | Esperar. Si termina en `Exited with status 1`, buscar el error en las líneas anteriores |
 | `Exited with status 1` después de conectar a la base | La app falló al arrancar | Buscar `APPLICATION FAILED TO START` o `Caused by:` en el log de Render |
