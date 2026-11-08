@@ -1,5 +1,6 @@
 package com.ejemplo.producto.core.ports.out;
 
+import com.ejemplo.producto.core.model.FiltroProducto;
 import com.ejemplo.producto.core.model.Producto;
 
 import java.util.List;
@@ -15,6 +16,9 @@ public interface BuscarProductoPortOut {
     Optional<Producto> buscarPorId(Long id);
 
     List<Producto> buscarTodos();
+
+    /** Productos que cumplen todos los criterios presentes en el filtro. */
+    List<Producto> buscarPorFiltro(FiltroProducto filtro);
 
     /** Más barato que buscarPorId cuando solo interesa saber si existe. */
     boolean existePorId(Long id);
