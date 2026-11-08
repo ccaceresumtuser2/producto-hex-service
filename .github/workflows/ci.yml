@@ -91,6 +91,7 @@ jobs:
       # Render vuelve a desplegar su configuración actual (si usa la imagen :latest, descarga la recién subida).
       # Si el secreto no existe, el paso se omite con un aviso.
       - name: Desplegar en Render
+        id: render
         env:
           RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}
         run: |
@@ -106,3 +107,42 @@ jobs:
             echo "::error::Render rechazó el despliegue (HTTP $codigo). Revise que el secreto sea la URL del Deploy Hook del servicio web."
             exit 1
           fi
+          # El hook responde {"deploy":{"id":"dep-..."}} y su URL tiene la forma .../deploy/srv-...?key=...
+          # Se guardan ambos ids para que el siguiente paso consulte el estado de este despliegue.
+          echo "deploy_id=$(jq -r '.deploy.id // empty' respuesta.txt)" >> "$GITHUB_OUTPUT"
+          echo "service_id=$(echo "$RENDER_DEPLOY_HOOK_URL" | grep -oE 'srv-[a-z0-9]+')" >> "$GITHUB_OUTPUT"
+
+      # El hook solo inicia el despliegue: Render lo hace después, en segundo plano.
+      # Este paso espera a que termine, así el workflow queda en verde solo si la versión nueva está en línea.
+      # Requiere el secreto RENDER_API_KEY (Render > Account Settings > API Keys); sin él, se omite con un aviso.
+      - name: Esperar a que Render termine el despliegue
+        if: steps.render.outputs.deploy_id != ''
+        timeout-minutes: 15
+        env:
+          RENDER_API_KEY: ${{ secrets.RENDER_API_KEY }}
+          SERVICE_ID: ${{ steps.render.outputs.service_id }}
+          DEPLOY_ID: ${{ steps.render.outputs.deploy_id }}
+        run: |
+          if [ -z "$RENDER_API_KEY" ]; then
+            echo "::warning::Secreto RENDER_API_KEY no configurado: no se espera al despliegue. Revise Render > Events."
+            exit 0
+          fi
+          url="https://api.render.com/v1/services/$SERVICE_ID/deploys/$DEPLOY_ID"
+          anterior=""
+          while true; do
+            estado=$(curl -sS --fail-with-body -H "Authorization: Bearer $RENDER_API_KEY" \
+                       -H "Accept: application/json" "$url" | jq -r '.status')
+            if [ "$estado" != "$anterior" ]; then
+              echo "$(date +%T) Estado del despliegue $DEPLOY_ID: $estado"
+              anterior="$estado"
+            fi
+            case "$estado" in
+              live)
+                echo "Despliegue terminado: la versión nueva está en línea."
+                exit 0 ;;
+              build_failed|update_failed|pre_deploy_failed|canceled|deactivated)
+                echo "::error::El despliegue en Render terminó con estado '$estado'. Revise Render > Logs."
+                exit 1 ;;
+            esac
+            sleep 15
+          done
